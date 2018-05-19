@@ -29,7 +29,7 @@ const (
 	PROJECT_ID = "swift-library-203921"
 	BT_INSTANCE = "around-post"
 	// Needs to update this URL if you deploy it to cloud.
-	ES_URL = "http://35.225.249.238:9200"
+	ES_URL = "http://35.202.207.176:9200"
 	BUCKET_NAME = "post-images-203921-1707123"
 )
 
