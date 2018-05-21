@@ -17,7 +17,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 
-	"cloud.google.com/go/bigtable"
+	// "cloud.google.com/go/bigtable"
 )
 
 
@@ -160,9 +160,10 @@ func handlerPost(w http.ResponseWriter, r *http.Request) {
 	saveToES(p, id)
 
 
+	/*
 	// Save to BigTable.
 	saveToBigTable(p, id)
-
+	*/
 
 	/*
 	// Parse from body of request to get a json object.
@@ -180,6 +181,7 @@ func handlerPost(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
+/*
 func saveToBigTable(p *Post, id string) {
 	ctx := context.Background()
 	// Create a client to bigTable
@@ -207,7 +209,7 @@ func saveToBigTable(p *Post, id string) {
 	}
 	fmt.Printf("Post is saved to BigTable: %s\n", p.Message)
 
-}
+}*/
 
 
 
