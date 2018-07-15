@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from 'antd';
+import '../styles/Header.css';
 import logo from '../assets/images/logo.svg';
 
 export class Header extends React.Component {

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/Main.css';
 import { Home } from "./Home"
 import { Login } from './Login';
 import { Register } from './Register';

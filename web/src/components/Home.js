@@ -1,10 +1,12 @@
 import React from 'react';
-import { Tabs, Button, Icon, Spin } from 'antd';
-import { API_ROOT, GEO_OPTIONS, POS_KEY, AUTH_PREFIX, TOKEN_KEY } from '../constants';
-import { Gallery} from "./Gallery";
+import { Tabs, Icon, Spin } from 'antd';
+import '../styles/Home.css';
+import { API_ROOT, GEO_OPTIONS, POS_KEY, AUTH_PREFIX, TOKEN_KEY, POST_RANGE} from '../constants';
+import { Gallery}  from './Gallery';
+import { CreatePostButton } from './CreatePostButton';
+import { WrappedAroundMap } from './AroundMap';
 import $ from 'jquery';
 const TabPane = Tabs.TabPane;
-const operations = <Button type="primary">Create New Post</Button>;
 
 export class Home extends React.Component {
     state = {
@@ -44,18 +46,20 @@ export class Home extends React.Component {
         this.setState({ loadingGeoLocation: false, error: 'Failed to load geo location!'});
     }
 
-    loadNearbyPosts = () => {
-        const {lat, lon} = JSON.parse(localStorage.getItem(POS_KEY));
+    loadNearbyPosts = (location, range) => {
+        const radius = range ? range : POST_RANGE;
+        const {lat, lon} = location ? location : JSON.parse(localStorage.getItem(POS_KEY));
         this.setState({ loadingPosts: true, error: '' });
         $.ajax({
-            url: `${API_ROOT}/search?lat=${lat}&lon${lon}&range=20000`,
+            url: `${API_ROOT}/search?lat=${lat}&lon=${lon}&range=${radius}`,
             method: 'GET',
             headers: ({
                 Authorization: `${AUTH_PREFIX} ${localStorage.getItem(TOKEN_KEY)}`,
             }),
         }).then((response) => {
-            this.setState({ loadingPosts: false, error: '', posts: response});
-            console.log(response);
+            this.setState({ loadingPosts: false, error: '', posts: response || []});
+            // console.log(localStorage.getItem(POS_KEY));
+            // console.log(response);
         }, (response) => {
             this.setState({ loadingPosts: false, error: response.responseText});
         }).catch((error) => {
@@ -87,12 +91,22 @@ export class Home extends React.Component {
     }
 
     render() {
+        const createPostButton = <CreatePostButton loadNearbyPosts={this.loadNearbyPosts}/>
         return (
-            <Tabs tabBarExtraContent={operations} className = "main-tab">
+            <Tabs tabBarExtraContent={createPostButton} className = "main-tab">
                 <TabPane tab={<span><Icon type="picture" />Nearby Posts </span>} key="1">
                     {this.getGalleryPanelContent()}
                 </TabPane>
-                <TabPane tab={<span><Icon type="environment" />Map </span>} key="2">Content of tab 2</TabPane>
+                <TabPane tab={<span><Icon type="environment" />Map </span>} key="2">
+                    <WrappedAroundMap
+                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg&v=3.exp&libraries=geometry,drawing,places"
+                        loadingElement={<div style={{ height: `100%` }} />}
+                        containerElement={<div style={{ height: `700px` }} />}
+                        mapElement={<div style={{ height: `100%` }} />}
+                        posts={this.state.posts}
+                        loadNearbyPosts={this.loadNearbyPosts}
+                    />
+                </TabPane>
             </Tabs>
         )
     }
